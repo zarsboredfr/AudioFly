@@ -34,11 +34,12 @@
           <div class="badge">Home</div>
           <h1>Download YouTube audio as MP3</h1>
           <p>Paste a YouTube link and get an MP3 file instantly.</p>
-          <form id="downloadForm">
-            <input id="videoUrl" type="url" placeholder="https://www.youtube.com/watch?v=..." required>
+          <form id="downloadForm" action="/download" method="get" target="_blank">
+            <input id="videoUrl" name="url" type="url" placeholder="https://www.youtube.com/watch?v=..." required>
             <button id="downloadButton" type="submit">Download MP3</button>
           </form>
           <p id="status" class="status"></p>
+          <div id="debugOutput" class="debug-output"></div>
         </div>
       </section>
       <section id="updates" class="page-section">

@@ -1,6 +1,7 @@
 const form = document.querySelector('#downloadForm')
 const input = document.querySelector('#videoUrl')
 const status = document.querySelector('#status')
+const debugOutput = document.querySelector('#debugOutput')
 const downloadButton = document.querySelector('#downloadButton')
 const backendStatusRoot = document.querySelector('#backendStatus')
 const backendStatusText = document.querySelector('#backendStatusText')
@@ -38,6 +39,10 @@ function showMessage(message) {
   status.textContent = message
 }
 
+function showDebug(message) {
+  debugOutput.textContent = message
+}
+
 function setBackendStatus(message, state) {
   backendStatusText.textContent = message
   backendStatusRoot.classList.remove('status-online', 'status-warning', 'status-offline')
@@ -71,20 +76,14 @@ function handleDownload(event) {
   }
 
   showMessage('Preparing your download...')
+  showDebug(`Download URL: /download?url=${encodeURIComponent(url)}`)
   setBackendStatus('Downloading...', 'warning')
   downloadButton.disabled = true
 
-  const href = `/download?url=${encodeURIComponent(url)}`
-  const anchor = document.createElement('a')
-  anchor.href = href
-  anchor.download = 'AudioFly.mp3'
-  anchor.style.display = 'none'
-  document.body.appendChild(anchor)
-  anchor.click()
-  anchor.remove()
+  form.submit()
 
   setTimeout(() => {
-    showMessage('Download started. Check your browser downloads.')
+    showMessage('Download request sent. Check your browser downloads.')
     setBackendStatus('Backend online', 'online')
     downloadButton.disabled = false
   }, 1500)

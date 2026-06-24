@@ -25,6 +25,11 @@ app.get('/status', (req, res) => {
   res.json({ status: 'ok', uptime: process.uptime() })
 })
 
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} ${req.method} ${req.url}`)
+  next()
+})
+
 async function streamDownload(videoUrl, res) {
   let info
   try {
@@ -77,6 +82,10 @@ async function streamDownload(videoUrl, res) {
     if (!res.headersSent) {
       res.status(500).send('Audio conversion failed')
     }
+  })
+
+  audioProcess.stderr.on('data', chunk => {
+    console.error('yt-dlp process stderr:', chunk.toString())
   })
 
   audioProcess.on('close', (code, signal) => {
