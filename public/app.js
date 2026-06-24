@@ -81,18 +81,36 @@ async function handleDownload(event) {
   downloadButton.disabled = true
 
   try {
-    const response = await fetch(`/debug?url=${encodeURIComponent(url)}`)
-    const debugData = await response.json()
+    const response = await fetch(`/debug?url=${encodeURIComponent(url)}`, {
+      headers: { Accept: 'application/json' }
+    })
+
+    const contentType = response.headers.get('content-type') || ''
+    let debugData = null
+    let errorText = `HTTP ${response.status} ${response.statusText}`
+
+    if (contentType.includes('application/json')) {
+      debugData = await response.json()
+    } else {
+      const text = await response.text()
+      if (text) {
+        errorText = text.slice(0, 500)
+      }
+    }
 
     if (!response.ok) {
       showMessage('Download failed. See debug output below.')
-      showDebug(`Debug error: ${debugData.message || 'Unknown error'}`)
+      if (debugData && debugData.message) {
+        showDebug(`Debug error: ${debugData.message}`)
+      } else {
+        showDebug(`Debug error: ${errorText}`)
+      }
       setBackendStatus('Backend error', 'offline')
       downloadButton.disabled = false
       return
     }
 
-    showDebug(`Ready to download: ${debugData.title} by ${debugData.uploader}`)
+    showDebug(`Ready to download: ${debugData?.title || 'unknown'} by ${debugData?.uploader || 'unknown'}`)
     setBackendStatus('Downloading...', 'warning')
     showMessage('Starting download...')
 
