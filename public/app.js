@@ -67,7 +67,7 @@ async function refreshBackendStatus() {
   return false
 }
 
-function handleDownload(event) {
+async function handleDownload(event) {
   event.preventDefault()
   const url = input.value.trim()
   if (!url) {
@@ -75,18 +75,39 @@ function handleDownload(event) {
     return
   }
 
-  showMessage('Preparing your download...')
-  showDebug(`Download URL: /download?url=${encodeURIComponent(url)}`)
-  setBackendStatus('Downloading...', 'warning')
+  showMessage('Checking video and preparing download...')
+  showDebug(`Debug URL: /debug?url=${encodeURIComponent(url)}`)
+  setBackendStatus('Checking URL...', 'warning')
   downloadButton.disabled = true
 
-  form.submit()
+  try {
+    const response = await fetch(`/debug?url=${encodeURIComponent(url)}`)
+    const debugData = await response.json()
 
-  setTimeout(() => {
-    showMessage('Download request sent. Check your browser downloads.')
-    setBackendStatus('Backend online', 'online')
+    if (!response.ok) {
+      showMessage('Download failed. See debug output below.')
+      showDebug(`Debug error: ${debugData.message || 'Unknown error'}`)
+      setBackendStatus('Backend error', 'offline')
+      downloadButton.disabled = false
+      return
+    }
+
+    showDebug(`Ready to download: ${debugData.title} by ${debugData.uploader}`)
+    setBackendStatus('Downloading...', 'warning')
+    showMessage('Starting download...')
+
+    form.submit()
+    setTimeout(() => {
+      showMessage('Download request sent. Check your browser downloads.')
+      setBackendStatus('Backend online', 'online')
+      downloadButton.disabled = false
+    }, 1500)
+  } catch (error) {
+    showMessage('Unable to contact backend. See debug output below.')
+    showDebug(`Fetch error: ${error.message}`)
+    setBackendStatus('Backend offline', 'offline')
     downloadButton.disabled = false
-  }, 1500)
+  }
 }
 
 form.addEventListener('submit', handleDownload)

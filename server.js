@@ -25,20 +25,45 @@ app.get('/status', (req, res) => {
   res.json({ status: 'ok', uptime: process.uptime() })
 })
 
+app.get('/debug', async (req, res) => {
+  const videoUrl = req.query.url
+  if (!videoUrl || !isYoutubeUrl(videoUrl)) {
+    return res.status(400).json({ status: 'error', message: 'Invalid YouTube URL' })
+  }
+
+  try {
+    const info = await fetchVideoInfo(videoUrl)
+    return res.json({
+      status: 'ok',
+      title: info.title || 'Unknown title',
+      uploader: info.uploader || 'Unknown uploader',
+      duration: info.duration || null,
+      webpage_url: info.webpage_url || videoUrl
+    })
+  } catch (error) {
+    console.error('yt-dlp debug error:', error)
+    return res.status(500).json({ status: 'error', message: String(error.message || error) })
+  }
+})
+
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} ${req.method} ${req.url}`)
   next()
 })
 
+async function fetchVideoInfo(videoUrl) {
+  return ytdlp(videoUrl, {
+    dumpSingleJson: true,
+    noWarnings: true,
+    skipDownload: true,
+    noCheckCertificate: true
+  })
+}
+
 async function streamDownload(videoUrl, res) {
   let info
   try {
-    info = await ytdlp(videoUrl, {
-      dumpSingleJson: true,
-      noWarnings: true,
-      skipDownload: true,
-      noCheckCertificate: true
-    })
+    info = await fetchVideoInfo(videoUrl)
   } catch (error) {
     console.error('yt-dlp info error:', error)
     return false
@@ -84,10 +109,6 @@ async function streamDownload(videoUrl, res) {
     }
   })
 
-  audioProcess.stderr.on('data', chunk => {
-    console.error('yt-dlp process stderr:', chunk.toString())
-  })
-
   audioProcess.on('close', (code, signal) => {
     if (code !== 0 && !res.headersSent) {
       res.status(500).send('Audio conversion failed')
@@ -118,6 +139,8 @@ app.get('/download', async (req, res) => {
   if (!videoUrl || !isYoutubeUrl(videoUrl)) {
     return res.status(400).send('Invalid YouTube URL')
   }
+
+  console.log(`Starting download for ${videoUrl}`)
   const success = await streamDownload(videoUrl, res)
   if (!success && !res.headersSent) {
     res.status(500).send('Unable to process download')
