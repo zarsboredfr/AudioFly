@@ -4,6 +4,9 @@ const ffmpegPath = require('ffmpeg-static')
 const path = require('path')
 const app = express()
 
+const cookiesFromBrowser = process.env.YTDLP_COOKIES_FROM_BROWSER
+const cookiesFile = process.env.YTDLP_COOKIES
+
 function sanitizeTitle(value) {
   return (value || 'AudioFly')
     .normalize('NFKD')
@@ -16,6 +19,44 @@ function sanitizeTitle(value) {
 
 function isYoutubeUrl(url) {
   return typeof url === 'string' && /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)/i.test(url)
+}
+
+function buildYtdlpOptions({ extractAudio = false, output = '-', skipDownload = false } = {}) {
+  const opts = {
+    noWarnings: true,
+    noCheckCertificate: true,
+    quiet: true
+  }
+
+  if (skipDownload) {
+    opts.skipDownload = true
+  }
+
+  if (extractAudio) {
+    opts.extractAudio = true
+    opts.audioFormat = 'mp3'
+    opts.audioQuality = '0'
+    opts.output = output
+    opts.preferFreeFormats = true
+    opts.ignoreErrors = true
+  }
+
+  if (cookiesFromBrowser) {
+    opts.cookiesFromBrowser = cookiesFromBrowser
+  }
+  if (cookiesFile) {
+    opts.cookies = cookiesFile
+  }
+
+  return opts
+}
+
+function getYtdlpErrorMessage(error) {
+  const message = String(error.stderr || error.message || error || '')
+  if (/sign in to confirm you(?:’|')re not a bot/i.test(message)) {
+    return 'YouTube blocked this video and requires browser cookies. Set YTDLP_COOKIES_FROM_BROWSER or YTDLP_COOKIES, or try a different video.'
+  }
+  return message || 'Unknown yt-dlp error'
 }
 
 app.use(express.static(path.join(__dirname, 'public')))
@@ -53,9 +94,7 @@ app.use((req, res, next) => {
 async function fetchVideoInfo(videoUrl) {
   return ytdlp(videoUrl, {
     dumpSingleJson: true,
-    noWarnings: true,
-    skipDownload: true,
-    noCheckCertificate: true
+    ...buildYtdlpOptions({ skipDownload: true })
   })
 }
 
@@ -64,9 +103,10 @@ async function streamDownload(videoUrl, res) {
   try {
     info = await fetchVideoInfo(videoUrl)
   } catch (error) {
-    console.error('yt-dlp info error:', error)
+    const message = getYtdlpErrorMessage(error)
+    console.error('yt-dlp info error:', message)
     if (!res.headersSent) {
-      res.status(500).send('Failed to fetch video info')
+      res.status(500).send(message)
     }
     return false
   }
@@ -85,17 +125,9 @@ async function streamDownload(videoUrl, res) {
     const audioProcess = ytdlp.exec(
       videoUrl,
       {
+        ...buildYtdlpOptions({ extractAudio: true, output: '-' }),
         noPlaylist: true,
-        extractAudio: true,
-        audioFormat: 'mp3',
-        audioQuality: '0',
-        output: '-',
-        quiet: true,
-        noWarnings: true,
-        noCheckCertificate: true,
-        ffmpegLocation: ffmpegPath,
-        preferFreeFormats: true,
-        ignoreErrors: true
+        ffmpegLocation: ffmpegPath
       },
       {
         stdout: 'pipe',
