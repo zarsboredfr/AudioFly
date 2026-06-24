@@ -136,13 +136,6 @@ body {
   0%, 100% { transform: scale(1); opacity: 1; }
   50% { transform: scale(1.18); opacity: 0.75; }
 }
-.download-frame {
-  width: 0;
-  height: 0;
-  border: none;
-  visibility: hidden;
-  position: absolute;
-}
 .page-section {
   display: none;
 }
@@ -201,6 +194,13 @@ button:disabled {
   margin: 0;
   min-height: 22px;
   color: #c1d1ff;
+}
+.debug-output {
+  margin-top: 12px;
+  color: #a8b7ff;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  opacity: 0.88;
 }
 .updates-list {
   display: grid;
