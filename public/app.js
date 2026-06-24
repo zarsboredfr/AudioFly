@@ -43,6 +43,10 @@ function showDebug(message) {
   debugOutput.textContent = message
 }
 
+function isYoutubeUrl(url) {
+  return typeof url === 'string' && /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)/i.test(url)
+}
+
 function setBackendStatus(message, state) {
   backendStatusText.textContent = message
   backendStatusRoot.classList.remove('status-online', 'status-warning', 'status-offline')
@@ -72,6 +76,14 @@ async function handleDownload(event) {
   const url = input.value.trim()
   if (!url) {
     showMessage('Enter a valid YouTube link.')
+    showDebug('')
+    return
+  }
+
+  if (!isYoutubeUrl(url)) {
+    showMessage('Only YouTube URLs are supported.')
+    showDebug('Please paste a YouTube watch or youtu.be URL.')
+    setBackendStatus('Invalid URL', 'offline')
     return
   }
 

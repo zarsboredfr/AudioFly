@@ -82,7 +82,10 @@ app.get('/debug', async (req, res) => {
     })
   } catch (error) {
     console.error('yt-dlp debug error:', error)
-    return res.status(500).json({ status: 'error', message: String(error.message || error) })
+    return res.status(500).json({
+      status: 'error',
+      message: getYtdlpErrorMessage(error)
+    })
   }
 })
 

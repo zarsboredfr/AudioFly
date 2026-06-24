@@ -152,6 +152,11 @@ p {
   color: #b8c0e1;
   line-height: 1.7;
 }
+.note {
+  margin: -16px 0 20px;
+  color: #9fb1ff;
+  font-size: 0.95rem;
+}
 form {
   display: grid;
   gap: 16px;
