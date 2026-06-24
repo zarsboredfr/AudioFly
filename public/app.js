@@ -4,7 +4,6 @@ const status = document.querySelector('#status')
 const downloadButton = document.querySelector('#downloadButton')
 const backendStatusRoot = document.querySelector('#backendStatus')
 const backendStatusText = document.querySelector('#backendStatusText')
-const downloadFrame = document.querySelector('#downloadFrame')
 const navButtons = document.querySelectorAll('.nav-button')
 const sections = document.querySelectorAll('.page-section')
 const updatesList = document.querySelector('#updatesList')
@@ -70,28 +69,25 @@ function handleDownload(event) {
     showMessage('Enter a valid YouTube link.')
     return
   }
+
   showMessage('Preparing your download...')
   setBackendStatus('Downloading...', 'warning')
   downloadButton.disabled = true
-  downloadFrame.src = `/download?url=${encodeURIComponent(url)}`
 
-  downloadFrame.onload = () => {
-    try {
-      const doc = downloadFrame.contentDocument || downloadFrame.contentWindow.document
-      const text = doc?.body?.innerText?.trim()
-      if (text) {
-        showMessage(text)
-        setBackendStatus('Download failed', 'offline')
-      }
-    } catch (err) {
-      // ignore cross-document or download-specific navigation behavior
-    }
-  }
+  const href = `/download?url=${encodeURIComponent(url)}`
+  const anchor = document.createElement('a')
+  anchor.href = href
+  anchor.target = '_blank'
+  anchor.rel = 'noreferrer noopener'
+  document.body.appendChild(anchor)
+  anchor.click()
+  anchor.remove()
 
-  const restoreButton = () => {
+  setTimeout(() => {
+    showMessage('Download started. Check your browser downloads.')
+    setBackendStatus('Backend online', 'online')
     downloadButton.disabled = false
-  }
-  setTimeout(restoreButton, 5000)
+  }, 1500)
 }
 
 form.addEventListener('submit', handleDownload)
