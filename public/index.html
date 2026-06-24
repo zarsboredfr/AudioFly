@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AudioFly</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand-shell">
+        <div class="badge">AudioFly</div>
+        <div class="brand-text">
+          <strong>AudioFly</strong>
+          <span>MP3 downloader + API hub</span>
+        </div>
+      </div>
+      <nav class="nav-list">
+        <button class="nav-button active" data-target="home">Home</button>
+        <button class="nav-button" data-target="updates">Updates</button>
+        <button class="nav-button" data-target="api">API</button>
+      </nav>
+      <div class="sidebar-note">Create API keys and stream downloads from your own app.</div>
+    </aside>
+    <main class="content">
+      <section id="home" class="page-section active">
+        <div class="card">
+          <div class="badge">Home</div>
+          <h1>Download YouTube audio as MP3</h1>
+          <p>Paste a YouTube link and get an MP3 file instantly. Use the API tab to generate developer keys.</p>
+          <form id="downloadForm">
+            <input id="videoUrl" type="url" placeholder="https://www.youtube.com/watch?v=..." required>
+            <button id="downloadButton" type="submit">Download MP3</button>
+          </form>
+          <p id="status" class="status"></p>
+        </div>
+      </section>
+      <section id="updates" class="page-section">
+        <div class="card">
+          <div class="badge">Updates</div>
+          <h1>Release notes</h1>
+          <p>Current improvements are listed here. Edit <code>public/updates.json</code> before your next release.</p>
+          <div id="updatesList" class="updates-list"></div>
+        </div>
+      </section>
+      <section id="api" class="page-section">
+        <div class="card">
+          <div class="badge">API</div>
+          <h1>Developer access</h1>
+          <p>Create your API key, then use it to request MP3 downloads directly from your app.</p>
+          <form id="apiKeyForm">
+            <input id="apiName" type="text" placeholder="Your project name" value="AudioFly Dev" required>
+            <button id="apiCreateButton" type="submit">Create API Key</button>
+          </form>
+          <p id="apiStatus" class="status"></p>
+          <div id="apiResult" class="api-result"></div>
+          <div class="api-guidance">
+            <div class="code-title">Create key request</div>
+            <pre class="code-block">POST /api/create-key
+Content-Type: application/json
+
+{ "name": "My App" }</pre>
+            <div class="code-title">Download with your key</div>
+            <pre class="code-block">GET /api/download?url={YOUTUBE_URL}&key={API_KEY}</pre>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

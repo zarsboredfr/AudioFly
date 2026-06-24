@@ -1,0 +1,10 @@
+[
+  {
+    "date": "2026-06-24",
+    "message": "Added the API hub, developer key creation, and updates page. Edit this file before your next release."
+  },
+  {
+    "date": "2026-06-24",
+    "message": "Built a side navigation layout for Home, Updates, and API pages."
+  }
+]

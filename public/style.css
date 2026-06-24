@@ -1,0 +1,215 @@
+:root {
+  color-scheme: dark;
+  font-family: Inter, system-ui, sans-serif;
+  background: #080c18;
+  color: #eef2ff;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #2d3b6f 0%, #080c18 45%, #05070e 100%);
+}
+.app-shell {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 28px;
+  border-radius: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(10, 18, 44, 0.9);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
+  min-height: 400px;
+}
+.brand-shell {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 16px;
+  align-items: center;
+}
+.brand-text strong {
+  display: block;
+  font-size: 1.2rem;
+}
+.brand-text span {
+  display: block;
+  color: #9fb1ff;
+  font-size: 0.95rem;
+}
+.card {
+  background: rgba(16, 24, 58, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+  padding: 36px;
+  backdrop-filter: blur(18px);
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: rgba(72, 103, 178, 0.18);
+  color: #dbe4ff;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+}
+.nav-list {
+  display: grid;
+  gap: 12px;
+}
+.nav-button {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 18px;
+  padding: 16px 18px;
+  font-size: 1rem;
+  font-weight: 700;
+  background: transparent;
+  color: #eef2ff;
+  text-align: left;
+  cursor: pointer;
+}
+.nav-button.active,
+.nav-button:hover {
+  border-color: rgba(111, 124, 255, 0.4);
+  background: rgba(111, 124, 255, 0.14);
+}
+.sidebar-note {
+  color: #a8b7ff;
+  line-height: 1.7;
+}
+.content {
+  display: grid;
+  gap: 24px;
+}
+.page-section {
+  display: none;
+}
+.page-section.active {
+  display: block;
+}
+h1 {
+  margin: 24px 0 12px;
+  font-size: clamp(2rem, 3vw, 2.75rem);
+  line-height: 1.05;
+}
+p {
+  margin: 0 0 24px;
+  color: #b8c0e1;
+  line-height: 1.7;
+}
+form {
+  display: grid;
+  gap: 16px;
+}
+input,
+button {
+  min-height: 54px;
+}
+input {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #f8fbff;
+  padding: 0 18px;
+  font-size: 1rem;
+}
+input:focus {
+  outline: 2px solid rgba(94, 147, 255, 0.32);
+}
+button {
+  border: none;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #6f7cff 0%, #4d61ff 100%);
+  color: #f8fbff;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+button:hover {
+  transform: translateY(-1px);
+  filter: saturate(1.08);
+}
+button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.status {
+  margin: 0;
+  min-height: 22px;
+  color: #c1d1ff;
+}
+.updates-list {
+  display: grid;
+  gap: 16px;
+}
+.update-item {
+  padding: 18px;
+  border: 1px solid rgba(111, 124, 255, 0.1);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.03);
+}
+.update-item strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #e3e9ff;
+}
+.api-result {
+  margin-top: 16px;
+  padding: 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(111, 124, 255, 0.14);
+  background: rgba(19, 27, 62, 0.9);
+  color: #eef2ff;
+}
+.api-guidance {
+  margin-top: 24px;
+  display: grid;
+  gap: 16px;
+}
+.code-title {
+  color: #a8b7ff;
+  font-size: 0.95rem;
+}
+.code-block {
+  margin: 0;
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #eef2ff;
+  overflow-x: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+@media (max-width: 900px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+  .sidebar {
+    min-height: auto;
+  }
+}
+@media (max-width: 520px) {
+  .app-shell {
+    padding: 16px;
+  }
+  .card {
+    padding: 28px 20px;
+  }
+}
