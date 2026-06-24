@@ -23,6 +23,12 @@
       <div class="sidebar-note">Simple YouTube to MP3 conversion in one place.</div>
     </aside>
     <main class="content">
+      <div class="page-topbar">
+        <div id="backendStatus" class="status-chip status-warning">
+          <span class="status-dot"></span>
+          <span id="backendStatusText">Checking backend...</span>
+        </div>
+      </div>
       <section id="home" class="page-section active">
         <div class="card">
           <div class="badge">Home</div>
@@ -33,6 +39,7 @@
             <button id="downloadButton" type="submit">Download MP3</button>
           </form>
           <p id="status" class="status"></p>
+          <iframe id="downloadFrame" class="download-frame" aria-hidden="true"></iframe>
         </div>
       </section>
       <section id="updates" class="page-section">

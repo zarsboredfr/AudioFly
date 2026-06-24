@@ -2,6 +2,9 @@ const form = document.querySelector('#downloadForm')
 const input = document.querySelector('#videoUrl')
 const status = document.querySelector('#status')
 const downloadButton = document.querySelector('#downloadButton')
+const backendStatusRoot = document.querySelector('#backendStatus')
+const backendStatusText = document.querySelector('#backendStatusText')
+const downloadFrame = document.querySelector('#downloadFrame')
 const navButtons = document.querySelectorAll('.nav-button')
 const sections = document.querySelectorAll('.page-section')
 const updatesList = document.querySelector('#updatesList')
@@ -36,6 +39,30 @@ function showMessage(message) {
   status.textContent = message
 }
 
+function setBackendStatus(message, state) {
+  backendStatusText.textContent = message
+  backendStatusRoot.classList.remove('status-online', 'status-warning', 'status-offline')
+  backendStatusRoot.classList.add(`status-${state}`)
+}
+
+async function refreshBackendStatus() {
+  setBackendStatus('Checking backend...', 'warning')
+  try {
+    const response = await fetch(`/status?cache=${Date.now()}`)
+    if (!response.ok) throw new Error('offline')
+    const data = await response.json()
+    if (data.status === 'ok') {
+      setBackendStatus('Backend online', 'online')
+      return true
+    }
+  } catch (error) {
+    setBackendStatus('Backend offline', 'offline')
+    return false
+  }
+  setBackendStatus('Backend offline', 'offline')
+  return false
+}
+
 function handleDownload(event) {
   event.preventDefault()
   const url = input.value.trim()
@@ -44,11 +71,27 @@ function handleDownload(event) {
     return
   }
   showMessage('Preparing your download...')
+  setBackendStatus('Downloading...', 'warning')
   downloadButton.disabled = true
-  window.location.href = `/download?url=${encodeURIComponent(url)}`
-  setTimeout(() => {
+  downloadFrame.src = `/download?url=${encodeURIComponent(url)}`
+
+  downloadFrame.onload = () => {
+    try {
+      const doc = downloadFrame.contentDocument || downloadFrame.contentWindow.document
+      const text = doc?.body?.innerText?.trim()
+      if (text) {
+        showMessage(text)
+        setBackendStatus('Download failed', 'offline')
+      }
+    } catch (err) {
+      // ignore cross-document or download-specific navigation behavior
+    }
+  }
+
+  const restoreButton = () => {
     downloadButton.disabled = false
-  }, 1500)
+  }
+  setTimeout(restoreButton, 5000)
 }
 
 form.addEventListener('submit', handleDownload)
@@ -67,6 +110,9 @@ setSection(route)
 if (route === 'updates') {
   loadUpdates()
 }
+
+refreshBackendStatus()
+setInterval(refreshBackendStatus, 5000)
 
 window.addEventListener('hashchange', () => {
   const next = window.location.hash.replace('#', '') || 'home'

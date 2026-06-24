@@ -21,6 +21,10 @@ function isYoutubeUrl(url) {
 
 app.use(express.static(path.join(__dirname, 'public')))
 
+app.get('/status', (req, res) => {
+  res.json({ status: 'ok', uptime: process.uptime() })
+})
+
 async function streamDownload(videoUrl, res) {
   let info
   try {
@@ -44,6 +48,7 @@ async function streamDownload(videoUrl, res) {
     `attachment; filename="${fallback}"; filename*=UTF-8''${encodeURIComponent(filename)}`
   )
   res.setHeader('Content-Type', 'audio/mpeg')
+  res.flushHeaders()
 
   const audioProcess = ytdlp.exec(
     videoUrl,
