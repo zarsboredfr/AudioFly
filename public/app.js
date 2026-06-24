@@ -75,13 +75,7 @@ function handleDownload(event) {
   downloadButton.disabled = true
 
   const href = `/download?url=${encodeURIComponent(url)}`
-  const anchor = document.createElement('a')
-  anchor.href = href
-  anchor.target = '_blank'
-  anchor.rel = 'noreferrer noopener'
-  document.body.appendChild(anchor)
-  anchor.click()
-  anchor.remove()
+  window.location.href = href
 
   setTimeout(() => {
     showMessage('Download started. Check your browser downloads.')

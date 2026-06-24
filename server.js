@@ -48,7 +48,6 @@ async function streamDownload(videoUrl, res) {
     `attachment; filename="${fallback}"; filename*=UTF-8''${encodeURIComponent(filename)}`
   )
   res.setHeader('Content-Type', 'audio/mpeg')
-  res.flushHeaders()
 
   const audioProcess = ytdlp.exec(
     videoUrl,
@@ -90,6 +89,12 @@ async function streamDownload(videoUrl, res) {
   })
 
   res.on('close', () => {
+    if (!audioProcess.killed) {
+      audioProcess.kill()
+    }
+  })
+
+  res.on('error', () => {
     if (!audioProcess.killed) {
       audioProcess.kill()
     }
