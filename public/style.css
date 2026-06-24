@@ -14,22 +14,12 @@ body {
 }
 .app-shell {
   display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 24px;
-  max-width: 1200px;
-  margin: 0 auto;
+  place-items: center;
+  min-height: 100vh;
   padding: 24px;
 }
-.sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  padding: 28px;
-  border-radius: 32px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(10, 18, 44, 0.9);
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
-  min-height: 400px;
+.content {
+  width: min(100%, 540px);
 }
 .brand-shell {
   display: grid;

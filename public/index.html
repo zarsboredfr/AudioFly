@@ -7,21 +7,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="app-shell">
-    <aside class="sidebar">
-      <div class="brand-shell">
-        <div class="badge">AudioFly</div>
-        <div class="brand-text">
-          <strong>AudioFly</strong>
-          <span>MP3 downloader</span>
-        </div>
-      </div>
-      <nav class="nav-list">
-        <button class="nav-button active" data-target="home">Home</button>
-        <button class="nav-button" data-target="updates">Updates</button>
-      </nav>
-      <div class="sidebar-note">Simple YouTube to MP3 conversion in one place.</div>
-    </aside>
+  <div class="app-shell simple">
     <main class="content">
       <div class="page-topbar">
         <div id="backendStatus" class="status-chip status-warning">
@@ -29,28 +15,18 @@
           <span id="backendStatusText">Checking backend...</span>
         </div>
       </div>
-      <section id="home" class="page-section active">
-        <div class="card">
-          <div class="badge">Home</div>
-          <h1>Download YouTube audio as MP3</h1>
-          <p>Paste a YouTube link and get an MP3 file instantly.</p>
-          <form id="downloadForm" action="/download" method="get" target="_blank">
-            <input id="videoUrl" name="url" type="url" placeholder="https://www.youtube.com/watch?v=..." required>
-            <button id="downloadButton" type="submit">Download MP3</button>
-          </form>
-          <p class="note">Only YouTube watch URLs and youtu.be links are supported. Some videos may require browser cookies if YouTube blocks automated access.</p>
-          <p id="status" class="status"></p>
-          <div id="debugOutput" class="debug-output"></div>
-        </div>
-      </section>
-      <section id="updates" class="page-section">
-        <div class="card">
-          <div class="badge">Updates</div>
-          <h1>Release notes</h1>
-          <p>Current improvements are listed here. Edit <code>public/updates.json</code> before your next release.</p>
-          <div id="updatesList" class="updates-list"></div>
-        </div>
-      </section>
+      <div class="card">
+        <div class="badge">AudioFly</div>
+        <h1>Download YouTube audio as MP3</h1>
+        <p>Paste a YouTube link and get an MP3 file instantly.</p>
+        <form id="downloadForm" action="/download" method="get" target="_blank">
+          <input id="videoUrl" name="url" type="url" placeholder="https://www.youtube.com/watch?v=..." required>
+          <button id="downloadButton" type="submit">Download MP3</button>
+        </form>
+        <p class="note">Only YouTube watch URLs and youtu.be links are supported. Some videos may require browser cookies if YouTube blocks automated access.</p>
+        <p id="status" class="status"></p>
+        <div id="debugOutput" class="debug-output"></div>
+      </div>
     </main>
   </div>
   <script src="app.js"></script>
