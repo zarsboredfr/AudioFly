@@ -75,7 +75,13 @@ function handleDownload(event) {
   downloadButton.disabled = true
 
   const href = `/download?url=${encodeURIComponent(url)}`
-  window.location.href = href
+  const anchor = document.createElement('a')
+  anchor.href = href
+  anchor.download = 'AudioFly.mp3'
+  anchor.style.display = 'none'
+  document.body.appendChild(anchor)
+  anchor.click()
+  anchor.remove()
 
   setTimeout(() => {
     showMessage('Download started. Check your browser downloads.')
