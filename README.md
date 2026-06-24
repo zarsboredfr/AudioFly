@@ -1,6 +1,6 @@
 # AudioFly
 
-A web-based YouTube to MP3 downloader with a developer API hub.
+A web-based YouTube to MP3 downloader.
 
 ## Setup
 
@@ -18,20 +18,6 @@ A web-based YouTube to MP3 downloader with a developer API hub.
 
 - Home page for YouTube MP3 conversion
 - Updates hub with editable `public/updates.json`
-- Developer API key creation and `/api/download` access
-
-## Developer API
-
-Create a key:
-
-POST /api/create-key
-Content-Type: application/json
-
-{ "name": "My App" }
-
-Download using a key:
-
-GET /api/download?url={YOUTUBE_URL}&key={API_KEY}
 
 ## Deploy to Render
 

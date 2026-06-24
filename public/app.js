@@ -5,10 +5,7 @@ const downloadButton = document.querySelector('#downloadButton')
 const navButtons = document.querySelectorAll('.nav-button')
 const sections = document.querySelectorAll('.page-section')
 const updatesList = document.querySelector('#updatesList')
-const apiForm = document.querySelector('#apiKeyForm')
-const apiNameInput = document.querySelector('#apiName')
-const apiStatus = document.querySelector('#apiStatus')
-const apiResult = document.querySelector('#apiResult')
+
 function setSection(sectionId) {
   sections.forEach(section => {
     section.classList.toggle('active', section.id === sectionId)
@@ -18,6 +15,7 @@ function setSection(sectionId) {
   })
   window.history.replaceState(null, '', `#${sectionId}`)
 }
+
 function loadUpdates() {
   fetch('updates.json')
     .then(response => response.json())
@@ -33,9 +31,11 @@ function loadUpdates() {
       updatesList.innerHTML = '<div class="update-item">Unable to load updates.</div>'
     })
 }
+
 function showMessage(message) {
   status.textContent = message
 }
+
 function handleDownload(event) {
   event.preventDefault()
   const url = input.value.trim()
@@ -50,31 +50,9 @@ function handleDownload(event) {
     downloadButton.disabled = false
   }, 1500)
 }
-function handleApiKey(event) {
-  event.preventDefault()
-  const name = apiNameInput.value.trim() || 'AudioFly Dev'
-  apiStatus.textContent = 'Generating API key...'
-  apiResult.textContent = ''
-  fetch('/api/create-key', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name })
-  })
-    .then(response => response.json())
-    .then(data => {
-      if (data.key) {
-        apiStatus.textContent = 'API key created successfully.'
-        apiResult.innerHTML = `<div><strong>Key:</strong> ${data.key}</div><div><strong>Name:</strong> ${data.name}</div>`
-      } else {
-        apiStatus.textContent = 'Unable to create API key.'
-      }
-    })
-    .catch(() => {
-      apiStatus.textContent = 'Unable to create API key.'
-    })
-}
+
 form.addEventListener('submit', handleDownload)
-apiForm.addEventListener('submit', handleApiKey)
+
 navButtons.forEach(button => {
   button.addEventListener('click', () => {
     setSection(button.dataset.target)
@@ -83,11 +61,13 @@ navButtons.forEach(button => {
     }
   })
 })
+
 const route = window.location.hash.replace('#', '') || 'home'
 setSection(route)
 if (route === 'updates') {
   loadUpdates()
 }
+
 window.addEventListener('hashchange', () => {
   const next = window.location.hash.replace('#', '') || 'home'
   setSection(next)
